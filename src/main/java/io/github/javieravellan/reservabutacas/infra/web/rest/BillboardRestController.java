@@ -36,6 +36,12 @@ public class BillboardRestController {
         return billboard != null ? ResponseEntity.ok(billboard) : ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/today")
+    public ResponseEntity<BillboardRecord> getBillboardByDate() {
+        var billboard = billboardPrimaryPort.getBillboardAvailableToday();
+        return billboard != null ? ResponseEntity.ok(billboard) : ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/{id}/seats")
     public ResponseEntity<List<SeatsByRoomAtBillboard>> getAllSeatsPeerRoomByBillboardId(@PathVariable long id) {
         var seats = billboardPrimaryPort.getAllSeatsPeerRoomByBillboardId(id);

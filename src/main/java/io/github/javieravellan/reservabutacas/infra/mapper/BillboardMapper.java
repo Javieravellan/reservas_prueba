@@ -2,6 +2,8 @@ package io.github.javieravellan.reservabutacas.infra.mapper;
 
 import io.github.javieravellan.reservabutacas.domain.BillboardMovieRecord;
 import io.github.javieravellan.reservabutacas.domain.BillboardRecord;
+import io.github.javieravellan.reservabutacas.domain.MovieShort;
+import io.github.javieravellan.reservabutacas.domain.RoomRecord;
 import io.github.javieravellan.reservabutacas.infra.entity.Billboard;
 import io.github.javieravellan.reservabutacas.infra.entity.BillboardMovie;
 import io.github.javieravellan.reservabutacas.infra.entity.Movie;
@@ -20,8 +22,8 @@ public class BillboardMapper {
                 billboard.getBillboardMovies().stream()
                         .map(billboardMovie -> new BillboardMovieRecord(
                                 billboardMovie.getId(),
-                                billboardMovie.getMovie().getId(),
-                                billboardMovie.getRoomId(),
+                                new MovieShort(billboardMovie.getMovie().getId(), billboardMovie.getMovie().getName(), billboardMovie.getMovie().getGenre()),
+                                new RoomRecord(billboardMovie.getRoomId(), billboardMovie.getRoomName(), billboardMovie.getRoom().getNumber()),
                                 billboard.getId(),
                                 billboardMovie.getShowTime()
                         )).toList()
@@ -39,11 +41,11 @@ public class BillboardMapper {
                     var bm = new BillboardMovie();
                     // set movie
                     var movie = new Movie();
-                    movie.setId(bmr.movieId());
+                    movie.setId(bmr.movie().id());
                     bm.setMovie(movie);
                     // set room
                     var room = new Room();
-                    room.setId(bmr.roomId());
+                    room.setId(bmr.room().id());
                     bm.setRoom(room);
                     bm.setShowTime(bmr.showTime());
                     return bm;

@@ -67,6 +67,11 @@ public class BillboardPrimaryAdapter implements BillboardPrimaryPort {
     }
 
     @Override
+    public BillboardRecord getBillboardAvailableToday() {
+        return billboardSecondaryPort.getBillboardAvailableToday();
+    }
+
+    @Override
     public BillboardRecord updateBillboard(long billboardId, BillboardRecord billboardRecord) {
         return billboardSecondaryPort.updateBillboard(billboardId, billboardRecord);
     }

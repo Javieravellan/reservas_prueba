@@ -10,6 +10,7 @@ public interface BillboardSecondaryPort {
     BillboardRecord createBillboard(BillboardRecord billboardRecord);
     List<BillboardRecord> getAllBillboards();
     BillboardRecord getBillboardById(long billboardId);
+    BillboardRecord getBillboardAvailableToday();
     BillboardRecord updateBillboard(long billboardId, BillboardRecord billboardRecord);
     void deleteBillboardById(long billboardId);
 }

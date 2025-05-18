@@ -70,6 +70,14 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
     }
 
     @Override
+    public BillboardRecord getBillboardAvailableToday() {
+        // Obtener la cartelera disponible hoy
+        var billboardOptional = billboardRepository.findOneBillboardAvailableToday();
+        return billboardOptional.map(BillboardMapper::toDto)
+                .orElse(null);
+    }
+
+    @Override
     public BillboardRecord updateBillboard(long billboardId, BillboardRecord billboardRecord) {
         billboardRepository.findById(billboardId)
                 .orElseThrow(() -> new CustomRequestException("Billboard not found", HttpStatus.NOT_FOUND));

@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 public record BillboardMovieRecord(
         long id,
-        long movieId,
-        long roomId,
+        MovieShort movie,
+        RoomRecord room,
         long billboardId,
         LocalDateTime showTime
 ) {
