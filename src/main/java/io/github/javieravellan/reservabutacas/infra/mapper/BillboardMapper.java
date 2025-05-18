@@ -1,9 +1,6 @@
 package io.github.javieravellan.reservabutacas.infra.mapper;
 
-import io.github.javieravellan.reservabutacas.domain.BillboardMovieRecord;
-import io.github.javieravellan.reservabutacas.domain.BillboardRecord;
-import io.github.javieravellan.reservabutacas.domain.MovieShort;
-import io.github.javieravellan.reservabutacas.domain.RoomRecord;
+import io.github.javieravellan.reservabutacas.domain.*;
 import io.github.javieravellan.reservabutacas.infra.entity.Billboard;
 import io.github.javieravellan.reservabutacas.infra.entity.BillboardMovie;
 import io.github.javieravellan.reservabutacas.infra.entity.Movie;
@@ -23,7 +20,16 @@ public class BillboardMapper {
                         .map(billboardMovie -> new BillboardMovieRecord(
                                 billboardMovie.getId(),
                                 new MovieShort(billboardMovie.getMovie().getId(), billboardMovie.getMovie().getName(), billboardMovie.getMovie().getGenre()),
-                                new RoomRecord(billboardMovie.getRoomId(), billboardMovie.getRoomName(), billboardMovie.getRoom().getNumber()),
+                                new RoomRecord(billboardMovie.getRoomId(), billboardMovie.getRoomName(), billboardMovie.getRoom().getNumber(),
+                                        billboardMovie.getRoom().getSeats().stream()
+                                                .map(seat -> new SeatRecord(
+                                                        seat.getId(),
+                                                        seat.getNumber(),
+                                                        seat.getRowNumber(),
+                                                        seat.isStatus(),
+                                                        billboardMovie.getRoomId()
+                                                )).toList()
+                                ),
                                 billboard.getId(),
                                 billboardMovie.getShowTime()
                         )).toList()

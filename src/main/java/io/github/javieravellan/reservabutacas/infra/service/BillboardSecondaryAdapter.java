@@ -70,6 +70,7 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
     }
 
     @Override
+    @Transactional
     public BillboardRecord getBillboardAvailableToday() {
         // Obtener la cartelera disponible hoy
         var billboardOptional = billboardRepository.findOneBillboardAvailableToday();

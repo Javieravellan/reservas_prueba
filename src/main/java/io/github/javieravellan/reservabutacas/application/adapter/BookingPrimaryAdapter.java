@@ -31,4 +31,9 @@ public class BookingPrimaryAdapter implements BookingPrimaryPort {
     public void cancelAllBookingsByBillboardMovieId(long billboardMovieId) {
         bookingSecondaryPort.cancelAllBookingsByBillboardMovieId(billboardMovieId);
     }
+
+    @Override
+    public void createBooking(BookingRecord bookingRecord) {
+
+    }
 }

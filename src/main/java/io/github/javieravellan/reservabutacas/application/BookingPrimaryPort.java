@@ -10,4 +10,5 @@ public interface BookingPrimaryPort {
     List<BookingRecord> getAllBookingsHorrorByPeriod(LocalDate startDate, LocalDate endDate);
     boolean cancelBookingAndActivateSeats(long bookingId);
     void cancelAllBookingsByBillboardMovieId(long billboardMovieId);
+    void createBooking(BookingRecord bookingRecord);
 }

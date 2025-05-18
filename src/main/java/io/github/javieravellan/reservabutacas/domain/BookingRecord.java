@@ -7,9 +7,8 @@ public record BookingRecord(
         long id,
         LocalDateTime date,
         LocalDateTime showTime,
-        long customerId,
+        CustomerRecord customer,
         long billboardId,
-        String customerName,
         String billboardName,
         List<SeatRecord> seats,
         MovieShort movie
