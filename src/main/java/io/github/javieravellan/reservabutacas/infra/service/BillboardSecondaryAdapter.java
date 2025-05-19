@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,8 +75,12 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
     public BillboardRecord getBillboardAvailableToday() {
         // Obtener la cartelera disponible hoy
         var billboardOptional = billboardRepository.findOneBillboardAvailableToday();
-        return billboardOptional.map(BillboardMapper::toDto)
-                .orElse(null);
+        return billboardOptional.map(b -> {
+            b.setBillboardMovies(b.getBillboardMovies().stream()
+                    .filter(bm -> bm.getShowTime().isAfter(LocalDateTime.now()))
+                    .toList());
+            return BillboardMapper.toDto(b);
+        }).orElse(null);
     }
 
     @Override
