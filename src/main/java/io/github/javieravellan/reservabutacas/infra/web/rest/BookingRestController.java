@@ -2,6 +2,7 @@ package io.github.javieravellan.reservabutacas.infra.web.rest;
 
 import io.github.javieravellan.reservabutacas.application.BookingPrimaryPort;
 import io.github.javieravellan.reservabutacas.domain.BookingRecord;
+import io.github.javieravellan.reservabutacas.infra.web.request.CreatingBookingRequest;
 import io.github.javieravellan.reservabutacas.infra.web.response.BookingCancelResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +48,12 @@ public class BookingRestController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> createBooking(@RequestBody CreatingBookingRequest creatingBookingRequest) {
+        bookingPrimaryPort.createBooking(creatingBookingRequest);
+        return ResponseEntity.status(201)
+                .build();
     }
 }

@@ -7,9 +7,11 @@ import io.github.javieravellan.reservabutacas.domain.MovieShort;
 import io.github.javieravellan.reservabutacas.domain.SeatRecord;
 import io.github.javieravellan.reservabutacas.infra.entity.*;
 import io.github.javieravellan.reservabutacas.infra.exception.CustomRequestException;
+import io.github.javieravellan.reservabutacas.infra.repository.BillboardMovieRepository;
 import io.github.javieravellan.reservabutacas.infra.repository.BookingRepository;
 import io.github.javieravellan.reservabutacas.infra.repository.CustomerRepository;
 import io.github.javieravellan.reservabutacas.infra.repository.SeatRepository;
+import io.github.javieravellan.reservabutacas.infra.web.request.CreatingBookingRequest;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -26,11 +28,13 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
     private final BookingRepository bookingRepository;
     private final SeatRepository seatRepository;
     private final CustomerRepository customerRepository;
+    private final BillboardMovieRepository billboardMovieRepository;
 
-    public BookingSecondaryAdapter(BookingRepository bookingRepository, SeatRepository seatRepository, CustomerRepository customerRepository) {
+    public BookingSecondaryAdapter(BookingRepository bookingRepository, SeatRepository seatRepository, CustomerRepository customerRepository, BillboardMovieRepository billboardMovieRepository) {
         this.bookingRepository = bookingRepository;
         this.seatRepository = seatRepository;
         this.customerRepository = customerRepository;
+        this.billboardMovieRepository = billboardMovieRepository;
     }
 
     @Override
@@ -114,38 +118,40 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
 
     @Override
     @Transactional
-    public void createBooking(BookingRecord bookingRecord) {
+    public void createBooking(CreatingBookingRequest bookingRecord) {
+        log.info("Creando reserva para cliente: {}", bookingRecord.documentNumber());
         Booking booking = new Booking();
         booking.setDate(LocalDateTime.now());
         // buscar cliente por cédula
-        customerRepository.findOneByDocumentNumber(booking.getCustomerDocumentNumber())
-                .ifPresentOrElse(booking::setCustomer, () -> {
-                    // guardar cliente y asignar a la reserva
-                    var customer = new Customer();
-                    customer.setName(bookingRecord.customer().name());
-                    customer.setDocumentNumber(bookingRecord.customer().documentNumber());
-                    customer.setEmail(bookingRecord.customer().email());
-                    customer.setLastName(bookingRecord.customer().lastName());
-                    customer.setPhoneNumber(bookingRecord.customer().phoneNumber());
-                    customer.setAge(bookingRecord.customer().age());
-                    var customerSaved = customerRepository.save(customer);
-                    booking.setCustomer(customerSaved);
-                });
-        booking.setSeats(bookingRecord.seats().stream()
-                .map(seatRecord -> {
-                    var seat = new Seat();
-                    seat.setId(seatRecord.id());
-                    seat.setNumber(seatRecord.number());
-                    seat.setRowNumber(seatRecord.rowNumber());
-                    seat.setStatus(false);
-                    return seat;
-                }).toList());
+        customerRepository.findOneByDocumentNumber(bookingRecord.documentNumber())
+            .ifPresentOrElse(booking::setCustomer, () -> {
+                // guardar cliente y asignar a la reserva
+                var customer = new Customer();
+                customer.setName(bookingRecord.customerName());
+                customer.setDocumentNumber(bookingRecord.documentNumber());
+                customer.setEmail(bookingRecord.customerEmail());
+                customer.setPhoneNumber(bookingRecord.phoneNumber());
+                customer.setAge(bookingRecord.customerAge());
+                var customerSaved = customerRepository.save(customer);
+                booking.setCustomer(customerSaved);
+            });
+        // buscar billboardMovie
+        billboardMovieRepository.findById(bookingRecord.billboardMovieId())
+            .ifPresent(bill -> {
+                if (bill.getAvailableSeats() < bookingRecord.seatIds().size()) {
+                    log.error("No hay suficientes asientos disponibles para la reserva");
+                    throw new CustomRequestException("No hay suficientes asientos disponibles para la reserva",
+                            HttpStatus.CONFLICT);
+                }
 
-        // setear función
-        var billboardMovie = new BillboardMovie();
-        billboardMovie.setId(bookingRecord.billboardId());
-        booking.setBillboardMovie(billboardMovie);
-
+                var bookedSeats = bill.getRoom().getSeats().stream()
+                        .filter(s -> bookingRecord.seatIds().stream().anyMatch(id -> s.getId().equals(id)))
+                        .peek(seat -> seat.setStatus(false)).toList();
+                booking.setSeats(bookedSeats);
+                booking.setBillboardMovie(bill);
+            });
+        booking.setStatus(true);
         bookingRepository.save(booking);
+        log.info("Reserva creada exitosamente. Cliente: {}", bookingRecord.documentNumber());
     }
 }

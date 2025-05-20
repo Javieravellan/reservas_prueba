@@ -4,6 +4,7 @@ import io.github.javieravellan.reservabutacas.application.BookingPrimaryPort;
 import io.github.javieravellan.reservabutacas.application.BookingSecondaryPort;
 import io.github.javieravellan.reservabutacas.application.Singleton;
 import io.github.javieravellan.reservabutacas.domain.BookingRecord;
+import io.github.javieravellan.reservabutacas.infra.web.request.CreatingBookingRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +34,7 @@ public class BookingPrimaryAdapter implements BookingPrimaryPort {
     }
 
     @Override
-    public void createBooking(BookingRecord bookingRecord) {
-
+    public void createBooking(CreatingBookingRequest bookingRecord) {
+        bookingSecondaryPort.createBooking(bookingRecord);
     }
 }
