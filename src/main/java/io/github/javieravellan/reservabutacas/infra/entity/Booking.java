@@ -34,4 +34,12 @@ public class Booking extends BaseEntity {
     public String getCustomerDocumentNumber() {
         return customer.getDocumentNumber();
     }
+
+    public Movie getMovie() {
+        return billboardMovie.getMovie();
+    }
+
+    public Billboard getBillboard() {
+        return billboardMovie.getBillboard();
+    }
 }

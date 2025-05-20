@@ -154,4 +154,32 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
         bookingRepository.save(booking);
         log.info("Reserva creada exitosamente. Cliente: {}", bookingRecord.documentNumber());
     }
+
+    @Override
+    @Transactional
+    public List<BookingRecord> getAllBookingsByBillboardToday() {
+        log.debug("Obteniendo todas las reservas del día");
+        return bookingRepository.findAllByBillboardToday().stream()
+            .map(booking -> new BookingRecord(
+                        booking.getId(),
+                        booking.getDate(),
+                        booking.getBillboardMovie().getShowTime(),
+                        new CustomerRecord(
+                                booking.getCustomer().getId(),
+                                booking.getCustomer().getDocumentNumber(),
+                                booking.getCustomer().getName(),
+                                booking.getCustomer().getLastName(),
+                                booking.getCustomer().getAge(),
+                                booking.getCustomer().getEmail(),
+                                booking.getCustomer().getPhoneNumber()
+                        ),
+                        booking.getBillboard().getId(),
+                        booking.getBillboardMovie().getRoomName(),
+                        booking.getSeats().stream()
+                                .map(seat -> new SeatRecord(seat.getId(), seat.getNumber(), seat.getRowNumber(), seat.isStatus(), booking.getRoomId()))
+                                .toList(),
+                        new MovieShort(booking.getMovie().getId(), booking.getMovie().getName(), booking.getMovie().getGenre())
+                )
+            ).toList();
+    }
 }

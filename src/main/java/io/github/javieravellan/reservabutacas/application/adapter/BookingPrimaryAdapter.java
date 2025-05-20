@@ -37,4 +37,9 @@ public class BookingPrimaryAdapter implements BookingPrimaryPort {
     public void createBooking(CreatingBookingRequest bookingRecord) {
         bookingSecondaryPort.createBooking(bookingRecord);
     }
+
+    @Override
+    public List<BookingRecord> getAllBookingsByBillboardToday() {
+        return bookingSecondaryPort.getAllBookingsByBillboardToday();
+    }
 }

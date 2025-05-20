@@ -56,4 +56,13 @@ public class BookingRestController {
         return ResponseEntity.status(201)
                 .build();
     }
+
+    @GetMapping("/today")
+    public ResponseEntity<List<BookingRecord>> getAllBookingsByBillboardToday() {
+        var result = bookingPrimaryPort.getAllBookingsByBillboardToday();
+        if (result.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(result);
+    }
 }

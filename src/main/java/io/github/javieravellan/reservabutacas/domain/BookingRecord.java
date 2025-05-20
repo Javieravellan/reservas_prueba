@@ -9,7 +9,7 @@ public record BookingRecord(
         LocalDateTime showTime,
         CustomerRecord customer,
         long billboardId,
-        String billboardName,
+        String roomName,
         List<SeatRecord> seats,
         MovieShort movie
 ) {
