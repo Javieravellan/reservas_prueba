@@ -182,4 +182,21 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
                 )
             ).toList();
     }
+
+    @Override
+    public void deleteBooking(long bookingId) {
+        log.info("Eliminando reserva con id: {}", bookingId);
+        bookingRepository.findById(bookingId).ifPresentOrElse(booking -> {
+            var seats = seatRepository.findByRoomIdIn(List.of(booking.getRoomId()));
+            for (var seat : seats) {
+                seat.setStatus(true);
+            }
+            seatRepository.saveAll(seats);
+            bookingRepository.delete(booking);
+            log.info("Reserva '{}' eliminada con éxito", bookingId);
+        }, () -> {
+            log.error("No se encontró la reserva con id: {}", bookingId);
+            throw new CustomRequestException("No se encontró la reserva con id: " + bookingId, HttpStatus.NOT_FOUND);
+        });
+    }
 }

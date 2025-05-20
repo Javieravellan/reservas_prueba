@@ -42,4 +42,9 @@ public class BookingPrimaryAdapter implements BookingPrimaryPort {
     public List<BookingRecord> getAllBookingsByBillboardToday() {
         return bookingSecondaryPort.getAllBookingsByBillboardToday();
     }
+
+    @Override
+    public void deleteBooking(long bookingId) {
+        bookingSecondaryPort.deleteBooking(bookingId);
+    }
 }

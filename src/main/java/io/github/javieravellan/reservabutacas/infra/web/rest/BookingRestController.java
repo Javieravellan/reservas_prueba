@@ -57,6 +57,12 @@ public class BookingRestController {
                 .build();
     }
 
+    @DeleteMapping("/{bookingId}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable long bookingId) {
+        bookingPrimaryPort.deleteBooking(bookingId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/today")
     public ResponseEntity<List<BookingRecord>> getAllBookingsByBillboardToday() {
         var result = bookingPrimaryPort.getAllBookingsByBillboardToday();

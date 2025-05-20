@@ -12,4 +12,5 @@ public interface BookingSecondaryPort {
     void cancelAllBookingsByBillboardMovieId(long billboardMovieId);
     void createBooking(CreatingBookingRequest bookingRecord);
     List<BookingRecord> getAllBookingsByBillboardToday();
+    void deleteBooking(long bookingId);
 }
