@@ -184,10 +184,11 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
     }
 
     @Override
+    @Transactional
     public void deleteBooking(long bookingId) {
         log.info("Eliminando reserva con id: {}", bookingId);
         bookingRepository.findById(bookingId).ifPresentOrElse(booking -> {
-            var seats = seatRepository.findByRoomIdIn(List.of(booking.getRoomId()));
+            var seats = seatRepository.findBookedSeatsByBookingId(booking.getId());
             for (var seat : seats) {
                 seat.setStatus(true);
             }
