@@ -135,7 +135,11 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
                 var customerSaved = customerRepository.save(customer);
                 booking.setCustomer(customerSaved);
             });
-        // buscar billboardMovie
+
+        if (bookingRecord.billboardMovieId() == 0) {
+            log.error("No se encontró la función en cartelera");
+            throw new CustomRequestException("No se encontró la función en cartelera", HttpStatus.NOT_FOUND);
+        }
         billboardMovieRepository.findById(bookingRecord.billboardMovieId())
             .ifPresent(bill -> {
                 if (bill.getAvailableSeats() < bookingRecord.seatIds().size()) {
