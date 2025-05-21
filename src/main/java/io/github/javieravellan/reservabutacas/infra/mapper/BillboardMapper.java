@@ -27,7 +27,8 @@ public class BillboardMapper {
                                                         seat.getNumber(),
                                                         seat.getRowNumber(),
                                                         seat.isStatus(),
-                                                        billboardMovie.getRoomId()
+                                                        billboardMovie.getRoomId(),
+                                                        billboardMovie.getRoomName()
                                                 )).toList()
                                 ),
                                 billboard.getId(),

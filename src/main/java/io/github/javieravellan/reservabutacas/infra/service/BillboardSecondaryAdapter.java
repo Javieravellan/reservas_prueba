@@ -37,7 +37,8 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
                                 seat.getNumber(),
                                 seat.getRowNumber(),
                                 seat.isStatus(),
-                                billboardMovie.getRoomId()
+                                billboardMovie.getRoomId(),
+                                seat.getRoom().getName()
                         )).toList();
                 list.addAll(seats);
             }));

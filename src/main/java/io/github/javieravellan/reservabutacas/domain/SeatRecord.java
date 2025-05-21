@@ -5,6 +5,7 @@ public record SeatRecord(
         short number,
         short rowNumber,
         boolean status,
-        long roomId
+        long roomId,
+        String roomName
 ) {
 }

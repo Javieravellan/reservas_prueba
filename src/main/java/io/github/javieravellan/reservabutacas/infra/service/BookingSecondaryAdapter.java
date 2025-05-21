@@ -67,8 +67,14 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
                     ),
                     0,
                     booking.getRoomName(),
-                    seatsPeerBooking.stream().map(seat -> new SeatRecord(seat.getId(), seat.getNumber(), seat.getRowNumber(), seat.isStatus(), booking.getRoomId()))
-                            .toList(),
+                    seatsPeerBooking.stream().map(seat -> new SeatRecord(
+                            seat.getId(),
+                            seat.getNumber(),
+                            seat.getRowNumber(),
+                            seat.isStatus(),
+                            booking.getRoomId(),
+                            booking.getRoomName()))
+                        .toList(),
                     new MovieShort(0, booking.getPelicula(), booking.getGenero())
             );
             bookingRecords.add(bookingRecord);
@@ -180,7 +186,13 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
                         booking.getBillboard().getId(),
                         booking.getBillboardMovie().getRoomName(),
                         booking.getSeats().stream()
-                                .map(seat -> new SeatRecord(seat.getId(), seat.getNumber(), seat.getRowNumber(), seat.isStatus(), booking.getRoomId()))
+                                .map(seat -> new SeatRecord(
+                                        seat.getId(),
+                                        seat.getNumber(),
+                                        seat.getRowNumber(),
+                                        seat.isStatus(),
+                                        booking.getRoomId(),
+                                        seat.getRoom().getName()))
                                 .toList(),
                         new MovieShort(booking.getMovie().getId(), booking.getMovie().getName(), booking.getMovie().getGenre())
                 )

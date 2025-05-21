@@ -14,7 +14,8 @@ public class SeatMapper {
                 seat.getNumber(),
                 seat.getRowNumber(),
                 seat.isStatus(),
-                seat.getRoomId()
+                seat.getRoomId(),
+                seat.getRoom().getName()
         );
     }
 
