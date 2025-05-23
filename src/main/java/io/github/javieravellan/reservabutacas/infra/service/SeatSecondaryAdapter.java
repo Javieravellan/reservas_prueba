@@ -4,7 +4,9 @@ import io.github.javieravellan.reservabutacas.application.SeatSecondaryPort;
 import io.github.javieravellan.reservabutacas.domain.SeatRecord;
 import io.github.javieravellan.reservabutacas.infra.exception.CustomRequestException;
 import io.github.javieravellan.reservabutacas.infra.mapper.SeatMapper;
+import io.github.javieravellan.reservabutacas.infra.repository.RoomRepository;
 import io.github.javieravellan.reservabutacas.infra.repository.SeatRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
+@Log4j2
 public class SeatSecondaryAdapter implements SeatSecondaryPort {
     private final SeatRepository seatRepository;
-
-    public SeatSecondaryAdapter(SeatRepository seatRepository) {
+    private final RoomRepository roomRepository;
+    public SeatSecondaryAdapter(SeatRepository seatRepository, RoomRepository roomRepository) {
         this.seatRepository = seatRepository;
+        this.roomRepository = roomRepository;
     }
 
     @Override
@@ -24,6 +28,14 @@ public class SeatSecondaryAdapter implements SeatSecondaryPort {
     public SeatRecord createSeat(SeatRecord seatRecord) {
         // Convert SeatRecord to Seat entity
         var seat = SeatMapper.toEntity(seatRecord);
+        seat.setId(null);
+        // obtener la sala
+        roomRepository.findById(seatRecord.roomId())
+                .ifPresentOrElse(seat::setRoom, () -> {
+                    throw new CustomRequestException("Sala no encontrada", HttpStatus.NOT_FOUND);
+                });
+        // Guardar la butaca
+        log.info("Guardando butaca: {}", seat);
         return SeatMapper.toDto(seatRepository.save(seat));
     }
 
