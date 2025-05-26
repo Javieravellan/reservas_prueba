@@ -14,6 +14,7 @@ public class BillboardMapper {
         return new BillboardRecord(
                 billboard.getId(),
                 billboard.getDate(),
+                billboard.isStatus(),
                 billboard.getStartTime(),
                 billboard.getEndTime(),
                 billboard.getBillboardMovies().stream()
@@ -41,24 +42,26 @@ public class BillboardMapper {
         Billboard billboard = new Billboard();
         billboard.setId(billboardRecord.id());
         billboard.setDate(billboardRecord.date());
+        billboard.setStatus(billboardRecord.status());
         billboard.setStartTime(billboardRecord.startTime());
         billboard.setEndTime(billboardRecord.endTime());
-        billboard.setBillboardMovies(billboardRecord.billboardMovies().stream()
-                .map(bmr -> {
-                    var bm = new BillboardMovie();
-                    // set movie
-                    var movie = new Movie();
-                    movie.setId(bmr.movie().id());
-                    bm.setMovie(movie);
-                    // set room
-                    var room = new Room();
-                    room.setId(bmr.room().id());
-                    bm.setRoom(room);
-                    bm.setShowTime(bmr.showTime());
-                    return bm;
-                })
-                .toList());
-
+        if (billboardRecord.billboardMovies() != null) {
+            billboard.setBillboardMovies(billboardRecord.billboardMovies().stream()
+                    .map(bmr -> {
+                        var bm = new BillboardMovie();
+                        // set movie
+                        var movie = new Movie();
+                        movie.setId(bmr.movie().id());
+                        bm.setMovie(movie);
+                        // set room
+                        var room = new Room();
+                        room.setId(bmr.room().id());
+                        bm.setRoom(room);
+                        bm.setShowTime(bmr.showTime());
+                        return bm;
+                    })
+                    .toList());
+        }
         return billboard;
     }
 }

@@ -51,6 +51,7 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
     public BillboardRecord createBillboard(BillboardRecord billboardRecord) {
         // Crear billboard
         var billboard = BillboardMapper.toEntity(billboardRecord);
+        billboard.setDate(LocalDateTime.now());
         return BillboardMapper.toDto(billboardRepository.save(billboard));
     }
 
