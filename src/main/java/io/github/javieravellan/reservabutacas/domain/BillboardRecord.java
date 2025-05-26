@@ -6,6 +6,7 @@ import java.util.List;
 public record BillboardRecord(
         long id,
         LocalDateTime date,
+        boolean status,
         LocalDateTime startTime,
         LocalDateTime endTime,
         List<BillboardMovieRecord> billboardMovies

@@ -55,6 +55,7 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
     }
 
     @Override
+    @Transactional
     public List<BillboardRecord> getAllBillboards() {
         // Obtener todas las carteleras
         var billboards = billboardRepository.findAll();
