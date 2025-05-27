@@ -10,4 +10,5 @@ public interface SeatPrimaryPort {
     SeatRecord updateSeat(long seatId, SeatRecord seatRecord);
     List<SeatRecord> getAllSeats();
     List<SeatRecord> getAllSeatsByRoomId(long roomId);
+    void toggleSeatStatus(long seatId);
 }

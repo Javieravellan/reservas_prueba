@@ -39,4 +39,9 @@ public class SeatPrimaryAdapter implements SeatPrimaryPort {
     public List<SeatRecord> getAllSeatsByRoomId(long roomId) {
         return seatSecondaryPort.getAllSeatsByRoomId(roomId);
     }
+
+    @Override
+    public void toggleSeatStatus(long seatId) {
+        seatSecondaryPort.toggleSeatStatus(seatId);
+    }
 }

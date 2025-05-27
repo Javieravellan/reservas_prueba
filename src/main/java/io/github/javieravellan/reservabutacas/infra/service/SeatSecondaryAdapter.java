@@ -75,4 +75,15 @@ public class SeatSecondaryAdapter implements SeatSecondaryPort {
                 .map(SeatMapper::toDto)
                 .toList();
     }
+
+    @Override
+    public void toggleSeatStatus(long seatId) {
+        log.info("Cambiando el estado de la butaca con ID: {}", seatId);
+        var seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new CustomRequestException("Butaca no encontrada", HttpStatus.NOT_FOUND));
+        // Cambiar el estado de la butaca
+        seat.setStatus(!seat.isStatus());
+        seatRepository.save(seat);
+        log.info("Estado de la butaca con ID {} cambiado a {}", seatId, seat.isStatus() ? "Disponible" : "No Disponible");
+    }
 }
