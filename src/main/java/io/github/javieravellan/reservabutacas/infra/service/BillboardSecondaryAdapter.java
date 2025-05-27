@@ -87,14 +87,15 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
     }
 
     @Override
+    @Transactional
     public BillboardRecord updateBillboard(long billboardId, BillboardRecord billboardRecord) {
-        billboardRepository.findById(billboardId)
+        var billboardFound = billboardRepository.findById(billboardId)
                 .orElseThrow(() -> new CustomRequestException("Billboard not found", HttpStatus.NOT_FOUND));
 
         // Actualizar cartelera
-        var billboard = BillboardMapper.toEntity(billboardRecord);
-        billboard.setId(billboardId);
-        return BillboardMapper.toDto(billboardRepository.save(billboard));
+        BillboardMapper.partialUpdate(billboardFound, billboardRecord);
+        billboardFound.setId(billboardId);
+        return BillboardMapper.toDto(billboardRepository.save(billboardFound));
     }
 
     @Override

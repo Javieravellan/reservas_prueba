@@ -64,4 +64,39 @@ public class BillboardMapper {
         }
         return billboard;
     }
+
+    public static void partialUpdate(Billboard billboard, BillboardRecord billboardRecord) {
+        if (billboardRecord.id() != null) {
+            billboard.setId(billboardRecord.id());
+        }
+        if (billboardRecord.date() != null) {
+            billboard.setDate(billboardRecord.date());
+        }
+        if (billboardRecord.status() != billboard.isStatus()) {
+            billboard.setStatus(billboardRecord.status());
+        }
+        if (billboardRecord.startTime() != billboard.getStartTime()) {
+            billboard.setStartTime(billboardRecord.startTime());
+        }
+        if (billboardRecord.endTime() != billboard.getEndTime()) {
+            billboard.setEndTime(billboardRecord.endTime());
+        }
+        if (billboardRecord.billboardMovies() != null) {
+            billboard.setBillboardMovies(billboardRecord.billboardMovies().stream()
+                    .map(bmr -> {
+                        var bm = new BillboardMovie();
+                        // set movie
+                        var movie = new Movie();
+                        movie.setId(bmr.movie().id());
+                        bm.setMovie(movie);
+                        // set room
+                        var room = new Room();
+                        room.setId(bmr.room().id());
+                        bm.setRoom(room);
+                        bm.setShowTime(bmr.showTime());
+                        return bm;
+                    })
+                    .toList());
+        }
+    }
 }
