@@ -96,6 +96,8 @@ public class BillboardMapper {
                         room.setId(bmr.room().id());
                         bm.setRoom(room);
                         bm.setShowTime(bmr.showTime());
+                        bm.setBillboard(billboard);
+                        bm.setStatus(true);
                         return bm;
                     })
                     .collect(Collectors.toList()));
