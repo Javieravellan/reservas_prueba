@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface BillboardRepository extends JpaRepository<Billboard, Long> {
     // Custom query methods can be defined here if needed
     // For example, to find a billboard by its name:
-    @Query(nativeQuery = true, value = "SELECT * FROM billboards WHERE start_time::date = CURRENT_DATE")
+    @Query(nativeQuery = true, value = "SELECT * FROM billboards WHERE start_time <= CURRENT_DATE AND end_time >= CURRENT_DATE LIMIT 1")
     Optional<Billboard> findOneBillboardAvailableToday();
 }
