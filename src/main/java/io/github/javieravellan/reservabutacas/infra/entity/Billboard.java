@@ -19,7 +19,7 @@ public class Billboard extends BaseEntity { // Representa una cartelera de cine
     private LocalDateTime startTime;
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
-    @OneToMany(mappedBy = "billboard", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "billboard", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BillboardMovie> billboardMovies = new ArrayList<>(); // estas serían las funciones de las películas
 
     public List<Movie> getMovies() {

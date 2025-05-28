@@ -8,6 +8,8 @@ import io.github.javieravellan.reservabutacas.infra.entity.Room;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.stream.Collectors;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BillboardMapper {
     public static BillboardRecord toDto(Billboard billboard) {
@@ -60,7 +62,7 @@ public class BillboardMapper {
                         bm.setShowTime(bmr.showTime());
                         return bm;
                     })
-                    .toList());
+                    .collect(Collectors.toList()));
         }
         return billboard;
     }
@@ -96,7 +98,7 @@ public class BillboardMapper {
                         bm.setShowTime(bmr.showTime());
                         return bm;
                     })
-                    .toList());
+                    .collect(Collectors.toList()));
         }
     }
 }
