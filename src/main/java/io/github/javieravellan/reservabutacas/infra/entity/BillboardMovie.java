@@ -14,11 +14,11 @@ import java.util.List;
 @Data
 @Table(name = "billboard_movies")
 public class BillboardMovie extends BaseEntity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Movie movie;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room room;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Billboard billboard;
     @Column(name = "show_time", nullable = false)
     private LocalDateTime showTime;

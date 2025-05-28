@@ -75,7 +75,7 @@ public class BookingSecondaryAdapter implements BookingSecondaryPort {
                             booking.getRoomId(),
                             booking.getRoomName()))
                         .toList(),
-                    new MovieShort(0, booking.getPelicula(), booking.getGenero())
+                    new MovieShort(null, booking.getPelicula(), booking.getGenero())
             );
             bookingRecords.add(bookingRecord);
         }

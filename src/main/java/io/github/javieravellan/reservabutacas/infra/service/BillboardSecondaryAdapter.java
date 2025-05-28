@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
@@ -55,6 +56,9 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
     @Override
     @Transactional
     public BillboardRecord createBillboard(BillboardRecord billboardRecord) {
+        if (billboardRecord.billboardMovies() == null || billboardRecord.billboardMovies().isEmpty()) {
+            throw new CustomRequestException("La cartelera debe tener al menos una función registrada.", HttpStatus.BAD_REQUEST);
+        }
         // Crear billboard
         var billboard = BillboardMapper.toEntity(billboardRecord);
         billboard.setDate(LocalDateTime.now());
@@ -95,10 +99,27 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
     @Override
     @Transactional
     public BillboardRecord updateBillboard(long billboardId, BillboardRecord billboardRecord) {
+        if (billboardRecord.billboardMovies() == null || billboardRecord.billboardMovies().isEmpty()) {
+            throw new CustomRequestException("La cartelera debe tener al menos una función registrada.", HttpStatus.BAD_REQUEST);
+        }
+
         var billboardFound = billboardRepository.findById(billboardId)
                 .orElseThrow(() -> new CustomRequestException("Billboard not found", HttpStatus.NOT_FOUND));
 
-        // Actualizar cartelera
+        var billboardMoviesToDelete = billboardFound.getBillboardMovies().stream()
+                .filter(bm -> billboardRecord.billboardMovies().stream()
+                        .noneMatch(bmr ->
+                                bmr.movie().id().equals(bm.getMovie().getId()) &&
+                                        bmr.room().id().equals(bm.getRoom().getId()) &&
+                                        bmr.showTime().equals(bm.getShowTime())
+                        ))
+                .collect(Collectors.toList());
+
+        if (!billboardMoviesToDelete.isEmpty()) {
+            billboardMovieRepository.deleteAll(billboardMoviesToDelete);
+            billboardFound.getBillboardMovies().removeAll(billboardMoviesToDelete);
+        }
+
         BillboardMapper.partialUpdate(billboardFound, billboardRecord);
         billboardFound.setId(billboardId);
         return BillboardMapper.toDto(billboardRepository.save(billboardFound));
