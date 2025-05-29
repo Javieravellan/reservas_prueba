@@ -119,6 +119,22 @@ public class BillboardSecondaryAdapter implements BillboardSecondaryPort {
             billboardMovieRepository.deleteAll(billboardMoviesToDelete);
             billboardFound.getBillboardMovies().removeAll(billboardMoviesToDelete);
         }
+        // validar duplicados entre lo registrado y lo que se va a registrar
+        var existingBillboardMovies = billboardFound.getBillboardMovies().stream()
+                .map(bm -> bm.getMovie().getId() + "-" + bm.getRoomId() + "-" + bm.getShowTime())
+                .collect(Collectors.toSet());
+
+        for (var bmr : billboardRecord.billboardMovies()) {
+            String key = bmr.movie().id() + "-" + bmr.room().id() + "-" + bmr.showTime();
+            if (existingBillboardMovies.contains(key)) {
+                billboardFound.getBillboardMovies()
+                        .removeIf(bm -> {
+                            billboardMovieRepository.delete(bm);
+                            return (bm.getMovie().getId() + "-" + bm.getRoomId() + "-" + bm.getShowTime()).equals(key);
+                        });
+            }
+        }
+
 
         BillboardMapper.partialUpdate(billboardFound, billboardRecord);
         billboardFound.setId(billboardId);
